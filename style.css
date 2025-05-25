@@ -1,0 +1,808 @@
+body {
+    font-family: 'Arial', sans-serif;
+    transition: margin-left .3s; /* Para la animación del contenido principal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.calendar-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 400px; /* Optimizado para móviles */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Estilos para la vista de año */
+.year-view {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 800px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.year-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.year-header h2 {
+    font-size: 1.6em;
+    margin: 0;
+    color: #007bff;
+}
+
+.year-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.year-header button:hover {
+    background-color: #0056b3;
+}
+
+.months-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .months-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .months-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.month-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.month-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.month-card h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+.month-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    font-size: 0.7em;
+}
+
+.month-mini-day {
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 2px;
+}
+
+.month-mini-day.has-event {
+    background-color: #ffc10730;
+}
+
+.month-mini-day.today {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Estilos para el botón de volver */
+#backToYearBtn {
+    margin-right: 10px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+    font-size: 1.4em;
+    margin: 0;
+    color: #007bff;
+}
+
+.calendar-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.calendar-header button:hover {
+    background-color: #0056b3;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.day-name {
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.day:hover {
+    background-color: #e9ecef;
+}
+
+.day.empty {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.day.today {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.day.selected {
+    background-color: #28a745;
+    color: white;
+}
+
+.day.has-event {
+    border-bottom: 3px solid #ffc107; /* Indicador de evento */
+}
+
+/* Estilos del Menú Lateral */
+.side-menu {
+    height: 100%;
+    width: 0; /* Oculto por defecto */
+    position: fixed;
+    z-index: 2000; /* Más alto que el modal de eventos */
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px; /* Espacio para el botón de cerrar */
+}
+
+.side-menu a {
+    padding: 10px 15px 10px 30px;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: #818181;
+    display: block;
+    transition: 0.2s;
+}
+
+.side-menu a:hover {
+    color: #f1f1f1;
+}
+
+.side-menu .close-menu-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.open-menu-btn {
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    position: fixed; /* Para que esté siempre visible */
+    top: 15px;
+    left: 15px;
+    z-index: 1500; /* Debajo del menú pero encima del contenido */
+}
+
+.open-menu-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Ajustes para el contenido principal cuando el menú está abierto */
+.main-content {
+    transition: margin-left .3s;
+    padding: 16px;
+    /* El margin-left se ajustará con JS */
+}
+
+/* Estilos para el widget del tiempo */
+.weather-widget-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la integración de Google Sheets */
+.google-sheets-integration {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.sheets-controls {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.sheets-controls h3 {
+    color: #007bff;
+    margin-top: 0;
+}
+
+.full-width {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    margin: 8px 0 15px 0;
+    box-sizing: border-box;
+}
+
+.buttons-row {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.primary-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #0056b3;
+}
+
+.secondary-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.secondary-btn:hover {
+    background-color: #5a6268;
+}
+
+.form-info {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #ffc107;
+    font-size: 0.9em;
+}
+
+.sheets-embed-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    min-height: 400px;
+    position: relative;
+}
+
+.sheets-embed-container iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+}
+
+.placeholder-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Asegurarse de que el iframe del widget ocupe todo el espacio disponible */
+.weather-widget-container iframe {
+    width: 100% !important;
+    height: 500px !important;
+    border: none;
+}
+
+/* Clase para ocultar elementos */
+.hidden {
+    display: none !important; /* !important para asegurar que sobreescriba otros display */
+}
+
+/* Modal de Eventos */
+.event-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.event-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    width: 85%;
+    max-width: 350px;
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.event-modal h3 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+.event-modal textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 80px;
+    box-sizing: border-box;
+}
+
+.event-modal button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.event-modal button:hover {
+    background-color: #1e7e34;
+}
+
+#eventList {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+#eventList div {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#eventList div:last-child {
+    border-bottom: none;
+}
+
+/* Estilos para la Sección Menu Diario */
+#menuDiarioView h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.daily-menu-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna para móviles */
+    gap: 20px;
+}
+
+.day-menu-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.day-menu-card h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.day-menu-card h4 {
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+.form-group input[type="text"],
+.add-staff-form input[type="text"] {
+    width: calc(100% - 22px); /* Ajuste para padding y borde */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.add-staff-form {
+    display: flex;
+    flex-direction: column; /* Apilado en móviles */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-staff-form input[type="text"] {
+    flex-grow: 1;
+}
+
+.add-staff-btn,
+.save-day-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.add-staff-btn:hover,
+.save-day-btn:hover {
+    background-color: #0056b3;
+}
+
+.save-day-btn {
+    background-color: #28a745; /* Verde para guardar */
+    margin-top: 10px;
+    width: 100%;
+}
+
+.save-day-btn:hover {
+    background-color: #1e7e34;
+}
+
+.staff-list {
+    margin-bottom: 15px;
+}
+
+.staff-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9em;
+}
+
+.staff-entry:last-child {
+    border-bottom: none;
+}
+
+.staff-entry span {
+    flex-basis: 45%; /* Distribuir espacio */
+}
+
+.staff-entry .delete-staff-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.staff-entry .delete-staff-btn:hover {
+    background-color: #c82333;
+}
+
+/* Media Query para tablets y escritorios pequeños */
+@media (min-width: 768px) {
+    .daily-menu-grid {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    }
+    .add-staff-form {
+        flex-direction: row; /* Lado a lado */
+    }
+}
+
+/* Media Query para escritorios más grandes */
+@media (min-width: 1024px) {
+    .daily-menu-grid {
+        grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+    }
+}
+
+/* Estilos para la Sección Menu Gaukler */
+#menuGauklerView h2, #menuGauklerView h3 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+#menuGauklerView h3 {
+    color: #333;
+    margin-top: 20px;
+}
+
+.gaukler-controls,
+.add-product-form-container,
+.product-display-area {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.category-management {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px; /* Espacio adicional */
+}
+
+.category-management input[type="text"],
+.category-management select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px; /* Limitar ancho */
+    box-sizing: border-box;
+}
+
+.category-management button {
+    padding: 10px 15px;
+    background-color: #5bc0de; /* Azul claro para categorías */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+}
+
+.category-management button:hover {
+    background-color: #31b0d5;
+}
+
+#addProductForm .form-group {
+    margin-bottom: 12px; /* Un poco más de espacio */
+}
+
+#addProductForm label {
+    display: block;
+    margin-bottom: 6px; /* Un poco más de espacio */
+    font-weight: bold;
+    color: #444;
+}
+
+#addProductForm input[type="text"],
+#addProductForm input[type="number"],
+#addProductForm input[type="url"],
+#addProductForm select {
+    width: 100%; /* Usar 100% y box-sizing */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#addProductForm button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    width: 100%;
+    margin-top: 15px; /* Espacio antes del botón */
+}
+
+#addProductForm button[type="submit"]:hover {
+    background-color: #1e7e34;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajuste minmax para tarjetas más pequeñas si es necesario */
+    gap: 20px;
+}
+
+.product-card {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Para alinear botones al final */
+}
+
+.product-card img {
+    width: 100%;
+    height: 180px; /* Altura fija para consistencia */
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #e9ecef; /* Placeholder color si la imagen no carga */
+}
+
+.product-card h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #0056b3;
+    font-size: 1.1em;
+    min-height: 2.2em; /* Para dos líneas de título */
+}
+
+.product-card p {
+    margin: 4px 0;
+    font-size: 0.9em;
+    color: #333;
+    flex-grow: 1; /* Para empujar las acciones hacia abajo si el contenido es corto */
+}
+
+.product-card .price {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 1.05em;
+}
+
+.product-card .description {
+    font-style: italic;
+    color: #555;
+    font-size: 0.9em;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.product-card .category-tag {
+    align-self: flex-start;
+    background-color: #6c757d;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px; /* Más redondeado */
+    font-size: 0.75em;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.product-card .actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.product-card .actions button {
+    flex-grow: 1; /* Para que los botones ocupen el espacio */
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: opacity 0.2s;
+}
+
+.product-card .actions button.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.product-card .actions button:hover {
+    opacity: 0.85;
+}
+

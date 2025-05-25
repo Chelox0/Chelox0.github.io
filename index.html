@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Local</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Calendario Local">
+</head>
+<body>
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="close-menu-btn" id="closeMenuBtn">&times;</a>
+        <a href="#tiempo">Tiempo</a>
+        <a href="#calendario">Calendario</a>
+        <a href="#menuDiario">Menu Diario</a>
+        <a href="#stock">Stock</a>
+        <a href="#menuGaukler">Menu Gaukler</a>
+    </div>
+
+    <div id="mainContent" class="main-content">
+        <button class="open-menu-btn" id="openMenuBtn">&#9776;</button>
+
+        <!-- Contenedores de las Vistas -->
+        <div id="tiempoView" class="view-section">
+            <h2>Tiempo</h2>
+            <div class="weather-widget-container">
+                <!-- Widget de WindGuru ampliado -->
+                <script id="wg_fwdg_3640_3_1748183220422">
+                (function (window, document) {
+                  var loader = function () {
+                    var arg = ["s=3640" ,"m=3","uid=wg_fwdg_3640_3_1748183220422" ,"wj=knots" ,"tj=c" ,"waj=m" ,"tij=cm" ,"odh=0" ,"doh=24" ,"fhours=240" ,"hrsm=3" ,"vt=forecasts" ,"lng=es" ,"p=WINDSPD,GUST,MWINDSPD,SMER,TMPE,FLHGT,CDC,APCP1s,RATING"];
+                    var script = document.createElement("script");
+                    var tag = document.getElementsByTagName("script")[0];
+                    script.src = "https://www.windguru.cz/js/widget.php?"+(arg.join("&"));
+                    tag.parentNode.insertBefore(script, tag);
+                  };
+                  window.addEventListener ? window.addEventListener("load", loader, false) : window.attachEvent("onload", loader);
+                })(window, document);
+                </script>
+                <div id="windguru-size-notice" style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;">
+                    El pronóstico del tiempo se cargará en unos momentos...
+                </div>
+            </div>
+        </div>
+
+        <div id="calendarioView" class="view-section hidden">
+            <!-- Vista de año completo (12 meses) -->
+            <div id="yearView" class="year-view">
+                <div class="year-header">
+                    <button id="prevYearBtn">&lt;</button>
+                    <h2 id="currentYear"></h2>
+                    <button id="nextYearBtn">&gt;</button>
+                </div>
+                <div class="months-grid" id="monthsGrid">
+                    <!-- Los 12 meses se generarán con JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Vista de mes individual (se muestra al hacer clic en un mes) -->
+            <div id="monthView" class="month-view hidden">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="backToYearBtn">↩ Volver</button>
+                        <button id="prevMonthBtn">&lt;</button>
+                        <h2 id="currentMonthYear"></h2>
+                        <button id="nextMonthBtn">&gt;</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="day-name">Dom</div>
+                        <div class="day-name">Lun</div>
+                        <div class="day-name">Mar</div>
+                        <div class="day-name">Mié</div>
+                        <div class="day-name">Jue</div>
+                        <div class="day-name">Vie</div>
+                        <div class="day-name">Sáb</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays">
+                        <!-- Los días se generarán con JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-modal" id="eventModal">
+                <div class="event-modal-content">
+                    <span class="close-button" id="closeModalBtn">&times;</span>
+                    <h3>Añadir/Ver Evento</h3>
+                    <p id="selectedDate"></p>
+                    <textarea id="eventText" placeholder="Describe tu evento..."></textarea>
+                    <button id="saveEventBtn">Guardar Evento</button>
+                    <div id="eventList"></div>
+                </div>
+            </div>
+        </div> <!-- Fin de calendarioView -->
+
+        <div id="menuDiarioView" class="view-section hidden">
+            <h2>Menú Diario Semanal</h2>
+            <div class="daily-menu-grid">
+                <!-- Lunes -->
+                <div class="day-menu-card" data-day="lunes">
+                    <h3>Lunes</h3>
+                    <div class="form-group">
+                        <label for="lunesMeal">Comida del Día:</label>
+                        <input type="text" id="lunesMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="lunesStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="lunes">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="lunes">Guardar Lunes</button>
+                </div>
+
+                <!-- Martes -->
+                <div class="day-menu-card" data-day="martes">
+                    <h3>Martes</h3>
+                    <div class="form-group">
+                        <label for="martesMeal">Comida del Día:</label>
+                        <input type="text" id="martesMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="martesStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="martes">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="martes">Guardar Martes</button>
+                </div>
+
+                <!-- Miércoles -->
+                <div class="day-menu-card" data-day="miercoles">
+                    <h3>Miércoles</h3>
+                    <div class="form-group">
+                        <label for="miercolesMeal">Comida del Día:</label>
+                        <input type="text" id="miercolesMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="miercolesStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="miercoles">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="miercoles">Guardar Miércoles</button>
+                </div>
+
+                <!-- Jueves -->
+                <div class="day-menu-card" data-day="jueves">
+                    <h3>Jueves</h3>
+                    <div class="form-group">
+                        <label for="juevesMeal">Comida del Día:</label>
+                        <input type="text" id="juevesMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="juevesStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="jueves">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="jueves">Guardar Jueves</button>
+                </div>
+
+                <!-- Viernes -->
+                <div class="day-menu-card" data-day="viernes">
+                    <h3>Viernes</h3>
+                    <div class="form-group">
+                        <label for="viernesMeal">Comida del Día:</label>
+                        <input type="text" id="viernesMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="viernesStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="viernes">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="viernes">Guardar Viernes</button>
+                </div>
+
+                <!-- Sábado -->
+                <div class="day-menu-card" data-day="sabado">
+                    <h3>Sábado</h3>
+                    <div class="form-group">
+                        <label for="sabadoMeal">Comida del Día:</label>
+                        <input type="text" id="sabadoMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="sabadoStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="sabado">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="sabado">Guardar Sábado</button>
+                </div>
+
+                <!-- Domingo -->
+                <div class="day-menu-card" data-day="domingo">
+                    <h3>Domingo</h3>
+                    <div class="form-group">
+                        <label for="domingoMeal">Comida del Día:</label>
+                        <input type="text" id="domingoMeal" class="meal-of-the-day">
+                    </div>
+                    <h4>Personal y Preferencias:</h4>
+                    <div class="staff-list" id="domingoStaffList">
+                        <!-- Entradas de personal se añadirán aquí por JS -->
+                    </div>
+                    <div class="add-staff-form">
+                        <input type="text" class="staff-name" placeholder="Nombre del personal">
+                        <input type="text" class="staff-preference" placeholder="Preferencia de comida">
+                        <button class="add-staff-btn" data-day="domingo">Añadir Personal</button>
+                    </div>
+                    <button class="save-day-btn" data-day="domingo">Guardar Domingo</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="stockView" class="view-section hidden">
+            <h2>Stock</h2>
+            
+            <div class="google-sheets-integration">
+                <div class="sheets-controls">
+                    <h3>Integración con Google Sheets</h3>
+                    <p>Integra una planilla de Google Sheets para gestionar tu inventario.</p>
+                    
+                    <div class="form-group">
+                        <label for="sheetsUrl">URL de la planilla de Google Sheets:</label>
+                        <input type="text" id="sheetsUrl" placeholder="https://docs.google.com/spreadsheets/d/..." class="full-width">
+                    </div>
+                    
+                    <div class="buttons-row">
+                        <button id="addSheetsBtn" class="primary-btn">Añadir Planilla</button>
+                        <button id="refreshSheetsBtn" class="secondary-btn">Actualizar Datos</button>
+                    </div>
+                    
+                    <div class="form-info">
+                        <p><strong>Nota:</strong> Para que la integración funcione, la planilla debe estar configurada como "Cualquier persona con el enlace puede ver".</p>
+                    </div>
+                </div>
+                
+                <div id="sheetsEmbedContainer" class="sheets-embed-container">
+                    <!-- Aquí se mostrará la planilla embebida -->
+                    <div id="noSheetsMessage" class="placeholder-message">
+                        <p>No hay ninguna planilla integrada. Añade una URL de Google Sheets arriba.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="menuGauklerView" class="view-section hidden">
+            <h2>Menú Gaukler - Gestión de Productos</h2>
+
+            <div class="gaukler-controls">
+                <div class="category-management">
+                    <h3>Categorías</h3>
+                    <select id="categoryFilterSelect">
+                        <option value="all">Todas las Categorías</option>
+                        <option value="Promociones">Promociones</option>
+                        <option value="Cervezas">Cervezas</option>
+                        <option value="Tragos">Tragos</option>
+                        <option value="Tapeos">Tapeos</option>
+                        <option value="Pizzas">Pizzas</option>
+                        <option value="Milanesas">Milanesas</option>
+                        <option value="Burger">Burger</option>
+                        <option value="Wraps">Wraps</option>
+                        <option value="Lomitos">Lomitos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="add-product-form-container">
+                <h3>Añadir Nuevo Producto</h3>
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label for="productName">Nombre del Producto:</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productDescription">Descripción:</label>
+                        <textarea id="productDescription" rows="3" placeholder="Descripción del producto..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Categoría:</label>
+                        <select id="productCategorySelect" required>
+                            <option value="Promociones">Promociones</option>
+                            <option value="Cervezas">Cervezas</option>
+                            <option value="Tragos">Tragos</option>
+                            <option value="Tapeos">Tapeos</option>
+                            <option value="Pizzas">Pizzas</option>
+                            <option value="Milanesas">Milanesas</option>
+                            <option value="Burger">Burger</option>
+                            <option value="Wraps">Wraps</option>
+                            <option value="Lomitos">Lomitos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Precio:</label>
+                        <input type="number" id="productPrice" step="0.01" value="0.00" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPhotoUrl">URL de la Foto:</label>
+                        <input type="url" id="productPhotoUrl" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    <button type="submit" id="saveProductBtn">Guardar Producto</button>
+                </form>
+            </div>
+
+            <div class="product-display-area">
+                <h3>Listado de Productos</h3>
+                <div id="productListContainer" class="product-list">
+                    <!-- Los productos se mostrarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div> <!-- Fin de mainContent -->
+    <script src="script.js"></script>
+    <script>
+        // Registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Error al registrar el Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
